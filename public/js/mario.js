@@ -5,11 +5,9 @@ export default function createMario() {
     return loadMarioSprites()
         .then(sprite => {
             const mario = new Entity();
-            mario.pos.set(64, 180);
-            mario.vel.set(2, -10);
-            mario.update = function () {
-                this.pos.x += this.vel.x;
-                this.pos.y += this.vel.y;
+            mario.update = function (deltaTime) {
+                this.pos.x += this.vel.x * deltaTime;
+                this.pos.y += this.vel.y * deltaTime;
             }
 
             mario.draw = function (context) {

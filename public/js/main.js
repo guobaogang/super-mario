@@ -3,6 +3,7 @@ import { createBackgroundLayer } from './layers.js';
 import { loadLevel } from './loaders.js';
 import { loadBackgoundSprites } from './sprites.js';
 import createMario from './mario.js';
+import Timer from './Timer.js';
 
 const canvas = document.getElementById('screen');
 const context = canvas.getContext('2d');
@@ -21,16 +22,20 @@ Promise.all([
 ]).then(([mario, sprites, level]) => {
     const comp = new Compositor();
     comp.add(createBackgroundLayer(level.backgrounds, sprites))
-    const graviy = 0.5;
+    const graviy = 30;
 
-    comp.add(createSpritesLayer(mario))
+    mario.pos.set(64, 180);
+    mario.vel.set(200, -600);
 
-    function update() {
-        comp.draw(context);
-        mario.update();
-        mario.vel.y += graviy;
-        requestAnimationFrame(update)
+    comp.add(createSpritesLayer(mario));
+
+    const timer = new Timer();
+
+    timer.update = function update(deltaTime) {
+            comp.draw(context);
+            mario.update(deltaTime);
+            mario.vel.y += graviy;
     }
 
-    update()
+    timer.start()
 })
